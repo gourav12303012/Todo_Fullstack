@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 
 const corsOption = {
-  origin: ["https://todo-fullstack-1-xol3.onrender.com/"],
+  origin: ["https://todo-fullstack-1-xol3.onrender.com"],
   credentials: true
 };
 app.use(cors(corsOption));
