@@ -1,11 +1,24 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const { v4: uuidv4 } = require('uuid');
-const axios = require('axios');
+import express from 'express';
+import bodyParser from 'body-parser';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import cors from 'cors';
+
+import todoRute from './router/todo.router.js';
+import connectDb from './uitls/connectDb.js';
 
 const app = express();
 app.use(bodyParser.json());
 
+const corsOption = {
+  origin: ["http://localhost:5173"],
+  credentials: true
+};
+app.use(cors(corsOption));
+
+app.use("/todo", todoRute);
+
+// In-memory todos array (not connected to DB yet)
 let todos = [];
 
 app.get('/todos', (req, res) => {
@@ -30,14 +43,23 @@ app.post('/summarize', async (req, res) => {
     todos.map(t => `• ${t.title}`).join('\n');
 
   try {
-    await axios.post('https://hooks.slack.com/services/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', {
-      text: summary
-    });
+    await axios.post(
+      'https://hooks.slack.com/services/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',
+      { text: summary }
+    );
     res.status(200).json({ message: 'Summary sent to Slack' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to send to Slack' });
   }
 });
 
-const PORT =  3005;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Connect to DB then start the server
+const PORT = 5000;
+
+connectDb().then(() => {
+  app.listen(PORT, () => {
+    console.log(`✅ Server is listening on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('❌ Failed to connect to DB:', err);
+});
