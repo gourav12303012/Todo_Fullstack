@@ -7,7 +7,7 @@ const List = () => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/todo/allTask");
+        const res = await axios.get("https://todo-fullstack-sekc.onrender.com/todo/allTask");
         if (res.data.success) {
           setTodos(res.data.data);
         }

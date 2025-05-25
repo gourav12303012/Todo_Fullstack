@@ -16,7 +16,7 @@ const AddTodo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/todo/addtask", form);
+      const res = await axios.post("https://todo-fullstack-sekc.onrender.com/todo/addtask", form);
       alert("Task Added Successfully!");
       console.log(res.data);
     } catch (err) {
